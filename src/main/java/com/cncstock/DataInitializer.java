@@ -1,7 +1,9 @@
 package com.cncstock;
 
 import com.cncstock.model.StockItem;
+import com.cncstock.model.User;
 import com.cncstock.repository.StockItemRepository;
+import com.cncstock.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -11,9 +13,12 @@ public class DataInitializer implements CommandLineRunner {
 
     private final StockItemRepository stockItemRepository;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public DataInitializer(StockItemRepository stockItemRepository) {
+    public DataInitializer(StockItemRepository stockItemRepository, UserRepository userRepository) {
         this.stockItemRepository = stockItemRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -56,6 +61,26 @@ public class DataInitializer implements CommandLineRunner {
 
             stockItemRepository.save(stockItem);
         }
+
+
+        Object[][] users = {
+                {107, "Pavel", "Naumovic", "1234"},
+                {108, "Bob", "Marley", "1234"},
+                {109, "Bill", "Jones", "1234"},
+                {110, "Steve", "Dingham", "1234"},
+                {111, "Gary", "Shearman", "1234"},
+        };
+
+        for (Object[] user : users) {
+            User newUser = new User();
+            newUser.setRotavalID((int) user[0]);
+            newUser.setName((String) user[1]);
+            newUser.setSurname((String) user[2]);
+            newUser.setPassword((String) user[3]);
+
+            userRepository.save(newUser);
+        }
+
 
 
     }
