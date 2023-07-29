@@ -1,12 +1,12 @@
 package com.cncstock.service;
 
+import com.cncstock.ExceptionGenerator;
 import com.cncstock.model.StockItem;
 import com.cncstock.repository.StockItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StockItemService {
@@ -36,25 +36,49 @@ public class StockItemService {
     }
 
     public StockItem createStockItem(StockItem stockItem) {
+        //required fields
+        String[] reqItemsArray = {"title", "location", "supplier", "minQty","category"};
+        List<String> reqItems = new ArrayList<>(Arrays.asList(reqItemsArray));
+
+        //check if any required fields are empty
+        try {
+            ExceptionGenerator.checkForEmptyFields(stockItem, reqItems);
+        } catch (ExceptionGenerator.EmptyFieldException e) {
+            throw new IllegalArgumentException(e);
+        }
+
+        // Check if a stock item with the same location already exists
+        if (stockItemRepository.existsById(stockItem.getLocation())) {
+            throw new IllegalArgumentException("Item with the same location already exists.");
+        }
+
         return stockItemRepository.save(stockItem);
     }
 
     public StockItem updateStockItem(int location, StockItem updatedStockItem) {
+        // Check if a stock item with the given location exists
         Optional<StockItem> stockItemOptional = stockItemRepository.findById(location);
-        if (stockItemOptional.isPresent()) {
-            StockItem existingStockItem = stockItemOptional.get();
-            existingStockItem.setTitle(updatedStockItem.getTitle());
-            existingStockItem.setBrand(updatedStockItem.getBrand());
-            existingStockItem.setSupplier(updatedStockItem.getSupplier());
-            existingStockItem.setMinQty(updatedStockItem.getMinQty());
-            existingStockItem.setDescription(updatedStockItem.getDescription());
-            existingStockItem.setCategory(updatedStockItem.getCategory());
-            existingStockItem.setMaterials(updatedStockItem.getMaterials());
-
-            return stockItemRepository.save(existingStockItem);
-        } else {
-            return null;
+        if (stockItemOptional.isEmpty()) {
+            throw new NoSuchElementException("Item with the specified location not found.");
         }
+
+        StockItem existingStockItem = stockItemOptional.get();
+
+        // Check if the updated location conflicts with an existing item
+        if (location != updatedStockItem.getLocation() && stockItemRepository.existsById(updatedStockItem.getLocation())) {
+            throw new IllegalArgumentException("Item with the updated location already exists.");
+        }
+
+        // Update the existing stock item
+        existingStockItem.setTitle(updatedStockItem.getTitle());
+        existingStockItem.setBrand(updatedStockItem.getBrand());
+        existingStockItem.setSupplier(updatedStockItem.getSupplier());
+        existingStockItem.setMinQty(updatedStockItem.getMinQty());
+        existingStockItem.setDescription(updatedStockItem.getDescription());
+        existingStockItem.setCategory(updatedStockItem.getCategory());
+        existingStockItem.setMaterials(updatedStockItem.getMaterials());
+
+        return stockItemRepository.save(existingStockItem);
     }
 
     public void deleteStockItem(int location) {

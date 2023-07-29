@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class StockItemController {
@@ -53,20 +53,30 @@ public class StockItemController {
     }
 
     @PostMapping("/stock-item")
-    public ResponseEntity<StockItem> createStockItem(@RequestBody StockItem stockItem) {
-        StockItem savedStockItem = stockItemService.createStockItem(stockItem);
-        return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
+    public ResponseEntity<?> createStockItem(@RequestBody StockItem stockItem) {
+        System.out.println(stockItem.toString());
+        try {
+            StockItem savedStockItem = stockItemService.createStockItem(stockItem);
+            return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/stock-item/{location}")
-    public ResponseEntity<StockItem> updateStockItem(@PathVariable("location") int location, @RequestBody StockItem stockItem) {
-        StockItem updatedStockItem = stockItemService.updateStockItem(location, stockItem);
-        if (updatedStockItem != null) {
-            return new ResponseEntity<>(updatedStockItem, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> updateStockItem(@PathVariable("location") int location, @RequestBody StockItem stockItem) {
+        try {
+            StockItem updatedStockItem = stockItemService.updateStockItem(location, stockItem);
+            if (updatedStockItem != null) {
+                return new ResponseEntity<>(updatedStockItem, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("Error: Item with the specified location not found.", HttpStatus.NOT_FOUND);
+            }
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @DeleteMapping("/stock-item/{location}")
     public ResponseEntity<HttpStatus> deleteStockItem(@PathVariable("location") int location) {

@@ -3,7 +3,10 @@ package com.cncstock.service;
 import com.cncstock.model.User;
 import com.cncstock.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -16,7 +19,10 @@ public class UserService {
     }
 
     public User createUser(User user) {
-        // Perform business logic related to creating a user (e.g., validation, password hashing)
+        Optional<User> existingUser = userRepository.findById(user.getRotavalID());
+        if (existingUser.isPresent()) {
+            throw new IllegalArgumentException("User with the same rotaval ID already exists.");
+        }
         return userRepository.save(user);
     }
 
@@ -36,6 +42,26 @@ public class UserService {
             return userRepository.save(existingUser);
         }
         return null;
+    }
+
+    public User updatePasswordByRotavalId(int rotavalId, int adminCode, String newPassword) {
+        // Perform business logic related to updating user password (e.g., validation, password hashing)
+
+        // Check if the user with the provided rotavalId and adminCode exists
+        User existingUser = userRepository.findById(rotavalId).orElse(null);
+        if (existingUser == null) {
+            throw new IllegalArgumentException("User with the provided rotaval ID does not exist.");
+        }
+
+        // Validate the adminCode (you might have your own validation logic here)
+        int validAdminCode = 12345; // Replace this with the actual valid admin code
+        if (adminCode != validAdminCode) {
+            throw new IllegalArgumentException("Invalid admin code.");
+        }
+
+        // Update the user's password
+        existingUser.setPassword(newPassword);
+        return userRepository.save(existingUser);
     }
 
     public void deleteUser(int userId) {
