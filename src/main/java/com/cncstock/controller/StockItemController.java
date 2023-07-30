@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -79,8 +80,13 @@ public class StockItemController {
 
 
     @DeleteMapping("/stock-item/{location}")
-    public ResponseEntity<HttpStatus> deleteStockItem(@PathVariable("location") int location) {
-        stockItemService.deleteStockItem(location);
+    public ResponseEntity<String> deleteStockItem(@PathVariable("location") int location) {
+        try{
+            stockItemService.deleteStockItem(location);
+        }catch (NoSuchElementException e) {
+            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

@@ -50,6 +50,10 @@ public class StockItem {
     @Setter
     private boolean isConstantStock;
 
+    @Getter
+    @Setter
+    private int stockQty;
+
 
 
 

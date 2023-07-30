@@ -44,7 +44,12 @@ public class StockItemService {
         try {
             ExceptionGenerator.checkForEmptyFields(stockItem, reqItems);
         } catch (ExceptionGenerator.EmptyFieldException e) {
-            throw new IllegalArgumentException(e);
+            String errorMessage = e.getMessage();
+            int semicolonIndex = errorMessage.indexOf(":");
+            if (semicolonIndex != -1) {
+                errorMessage = errorMessage.substring(semicolonIndex + 1).trim();
+            }
+            throw new IllegalArgumentException(errorMessage);
         }
 
         // Check if a stock item with the same location already exists
@@ -82,6 +87,10 @@ public class StockItemService {
     }
 
     public void deleteStockItem(int location) {
+        Optional<StockItem> stockItemOptional = stockItemRepository.findById(location);
+        if (stockItemOptional.isEmpty()) {
+            throw new NoSuchElementException("Item with the specified location not found.");
+        }
         stockItemRepository.deleteById(location);
     }
 }

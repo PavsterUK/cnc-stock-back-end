@@ -16,7 +16,7 @@ public class ExceptionGenerator {
                 Field field = clazz.getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Object value = field.get(obj);
-                if (value == null || value.equals(-1) ||  value.toString().isEmpty()) {
+                if (value == null || value.equals(-1) || value.toString().isEmpty()) {
                     throw new EmptyFieldException("Field '" + fieldName + "' is empty.");
                 }
             } catch (NoSuchFieldException | IllegalAccessException e) {
