@@ -1,9 +1,6 @@
 package com.cncstock.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -16,10 +13,12 @@ public class StockItem {
     @Id
     @Getter
     @Setter
+    @NonNull
     private int location;
 
     @Getter
     @Setter
+    @NonNull
     private String title;
 
     @Getter
@@ -28,10 +27,12 @@ public class StockItem {
 
     @Getter
     @Setter
+    @NonNull
     private String supplier;
 
     @Getter
     @Setter
+    @NonNull
     private int minQty ;
 
     @Getter
@@ -40,6 +41,7 @@ public class StockItem {
 
     @Getter
     @Setter
+    @NonNull
     private String category;
 
     @Getter
@@ -53,8 +55,6 @@ public class StockItem {
     @Getter
     @Setter
     private int stockQty;
-
-
 
 
 }
