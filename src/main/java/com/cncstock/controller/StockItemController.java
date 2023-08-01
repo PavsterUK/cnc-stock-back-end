@@ -37,56 +37,32 @@ public class StockItemController {
     @GetMapping("/stock-list")
     public ResponseEntity<List<StockItem>> getAllStockItemsByTitle(@RequestParam(required = false) String title) {
         List<StockItem> stockItems = stockItemService.getAllStockItemsByTitle(title);
-        if (stockItems.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
         return new ResponseEntity<>(stockItems, HttpStatus.OK);
     }
 
     @GetMapping("/stock-item/{location}")
     public ResponseEntity<StockItem> getStockItemByLocation(@PathVariable("location") int location) {
         StockItem stockItem = stockItemService.getStockItemByLocation(location);
-        if (stockItem != null) {
-            return new ResponseEntity<>(stockItem, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(stockItem, HttpStatus.OK);
     }
 
     @PostMapping("/stock-item")
     public ResponseEntity<?> createStockItem(@RequestBody StockItem stockItem) {
-        System.out.println(stockItem.toString());
-        try {
-            StockItem savedStockItem = stockItemService.createStockItem(stockItem);
-            return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        StockItem savedStockItem = stockItemService.createStockItem(stockItem);
+        return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
+
     }
 
     @PutMapping("/stock-item/{location}")
     public ResponseEntity<?> updateStockItem(@PathVariable("location") int location, @RequestBody StockItem stockItem) {
-        try {
-            StockItem updatedStockItem = stockItemService.updateStockItem(location, stockItem);
-            if (updatedStockItem != null) {
-                return new ResponseEntity<>(updatedStockItem, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Error: Item with the specified location not found.", HttpStatus.NOT_FOUND);
-            }
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
+        StockItem updatedStockItem = stockItemService.updateStockItem(location, stockItem);
+        return new ResponseEntity<>("Item Updated", HttpStatus.OK);
     }
 
 
     @DeleteMapping("/stock-item/{location}")
     public ResponseEntity<String> deleteStockItem(@PathVariable("location") int location) {
-        try{
-            stockItemService.deleteStockItem(location);
-        }catch (NoSuchElementException e) {
-            return new ResponseEntity<>("Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
+        stockItemService.deleteStockItem(location);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

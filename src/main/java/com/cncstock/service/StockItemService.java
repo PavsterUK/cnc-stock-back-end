@@ -1,14 +1,9 @@
 package com.cncstock.service;
 
-import com.cncstock.ExceptionGenerator;
 import com.cncstock.model.StockItem;
 import com.cncstock.repository.StockItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -41,27 +36,13 @@ public class StockItemService {
     }
 
     public StockItem createStockItem(StockItem stockItem) {
-        //required fields
-        String[] reqItemsArray = {"title", "location", "supplier", "minQty","category"};
-        List<String> reqItems = new ArrayList<>(Arrays.asList(reqItemsArray));
 
-        //check if any required fields are empty
-        try {
-            ExceptionGenerator.checkForEmptyFields(stockItem, reqItems);
-        } catch (ExceptionGenerator.EmptyFieldException e) {
-            String errorMessage = e.getMessage();
-            int semicolonIndex = errorMessage.indexOf(":");
-            if (semicolonIndex != -1) {
-                errorMessage = errorMessage.substring(semicolonIndex + 1).trim();
-            }
-            throw new IllegalArgumentException(errorMessage);
-        }
+        checkRequiredFields(stockItem, "title", "location", "supplier", "minQty","category");
 
         // Check if a stock item with the same location already exists
         if (stockItemRepository.existsById(stockItem.getLocation())) {
             throw new IllegalArgumentException("Item with the same location already exists.");
         }
-
         return stockItemRepository.save(stockItem);
     }
 
@@ -73,7 +54,7 @@ public class StockItemService {
 
         StockItem existingStockItem = stockItemOptional.get();
 
-        checkRequiredFields(updatedStockItem, "title", "supplier", "minQty", "category", "location");
+        checkRequiredFields(updatedStockItem, "title", "supplier", "minQty", "category", "location","stockQty");
 
         checkLocationConflict(location, updatedStockItem);
 
@@ -97,6 +78,7 @@ public class StockItemService {
                 // Additional validation for numeric fields (minQty, location, stockQty)
                 if (field.getType() == int.class) {
                     int numericValue = (int) value;
+                    System.out.println("Num value="+ fieldName +"="+ numericValue);
                     if (numericValue < 0) {
                         throw new IllegalArgumentException(fieldName + " must be a non-negative value.");
                     }
@@ -138,10 +120,4 @@ public class StockItemService {
         stockItemRepository.deleteById(location);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
-        // Extract validation error details from ex and create a custom error response
-        String errorMessage = "Validation error: " + ex.getMessage();
-        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
-    }
 }
