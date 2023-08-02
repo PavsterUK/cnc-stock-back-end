@@ -50,7 +50,6 @@ public class StockItemController {
     public ResponseEntity<?> createStockItem(@RequestBody StockItem stockItem) {
         StockItem savedStockItem = stockItemService.createStockItem(stockItem);
         return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
-
     }
 
     @PutMapping("/stock-item/{location}")
