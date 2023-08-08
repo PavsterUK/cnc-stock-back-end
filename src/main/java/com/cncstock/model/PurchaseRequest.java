@@ -3,7 +3,6 @@ package com.cncstock.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 
 @Entity
 @ToString
