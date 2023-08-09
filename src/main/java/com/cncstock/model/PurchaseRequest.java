@@ -14,7 +14,7 @@ public class PurchaseRequest {
     @Getter
     @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Getter
     @Setter
@@ -22,6 +22,7 @@ public class PurchaseRequest {
 
     @Getter
     @Setter
+    @Column(length = 1000)
     private String requestBody;
 
     @Getter

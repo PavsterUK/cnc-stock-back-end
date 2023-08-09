@@ -1,6 +1,7 @@
 package com.cncstock.controller;
 
 import com.cncstock.model.PurchaseRequest;
+import com.cncstock.model.StockItem;
 import com.cncstock.service.PurchaseRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,27 @@ public class PurchaseRequestController {
         PurchaseRequest createdRequest = purchaseRequestService.createPurchaseRequest(purchaseRequest);
         return ResponseEntity.ok(createdRequest);
     }
+
+    @PutMapping("/purchase-request/{id}")
+    public ResponseEntity<PurchaseRequest> updatePurchaseRequest(
+            @PathVariable("id") Long id,
+            @RequestBody PurchaseRequest updatedRequest) {
+        PurchaseRequest updatedPurchaseRequest = purchaseRequestService.updatePurchaseRequest(id, updatedRequest);
+        if (updatedPurchaseRequest == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok(updatedPurchaseRequest);
+    }
+
+    @DeleteMapping("/purchase-request/{id}")
+    public ResponseEntity<?> deletePurchaseRequest(@PathVariable("id") Long id) {
+        boolean isDeleted = purchaseRequestService.deletePurchaseRequest(id);
+        if (!isDeleted) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 
 }

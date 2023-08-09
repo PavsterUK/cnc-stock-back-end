@@ -25,5 +25,29 @@ public class PurchaseRequestService {
        return purchaseRequestRepository.save(purchaseRequest);
     }
 
+    public PurchaseRequest updatePurchaseRequest(Long id, PurchaseRequest updatedRequest) {
+        PurchaseRequest existingRequest = purchaseRequestRepository.findById(id).orElse(null);
+        if (existingRequest == null) {
+            throw new IllegalArgumentException("Item with the provided id doesn't exists.");
+        }
+
+        existingRequest.setRequestDate(updatedRequest.getRequestDate());
+        existingRequest.setRequestBody(updatedRequest.getRequestBody());
+        existingRequest.setRequester(updatedRequest.getRequester());
+        existingRequest.setItemPurchased(updatedRequest.isItemPurchased());
+
+        return purchaseRequestRepository.save(existingRequest);
+    }
+
+    public boolean deletePurchaseRequest(Long id) {
+        PurchaseRequest existingRequest = purchaseRequestRepository.findById(id).orElse(null);
+        if (existingRequest == null) {
+            throw new IllegalArgumentException("Item with the provided id doesn't exists.");
+        }
+
+        purchaseRequestRepository.delete(existingRequest);
+        return true;
+    }
+
 
 }
