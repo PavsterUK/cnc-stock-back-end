@@ -1,22 +1,24 @@
 package com.cncstock.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
+@ToString
+@NoArgsConstructor
 @Table(name = "STOCK")
 public class StockItem {
 
     @Id
     @Getter
     @Setter
+    @NonNull
     private int location;
 
     @Getter
     @Setter
+    @NonNull
     private String title;
 
     @Getter
@@ -25,11 +27,13 @@ public class StockItem {
 
     @Getter
     @Setter
+    @NonNull
     private String supplier;
 
     @Getter
     @Setter
-    private int minQty;
+    @NonNull
+    private int minQty ;
 
     @Getter
     @Setter
@@ -37,14 +41,20 @@ public class StockItem {
 
     @Getter
     @Setter
+    @NonNull
     private String category;
 
     @Getter
     @Setter
     private String[] materials;
 
-    public StockItem() {
-    }
+    @Getter
+    @Setter
+    private boolean isConstantStock;
+
+    @Getter
+    @Setter
+    private int stockQty;
 
 
 }
