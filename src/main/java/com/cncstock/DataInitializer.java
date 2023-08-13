@@ -26,8 +26,8 @@ public class DataInitializer implements CommandLineRunner {
 
         // Data for 20 items in the stock table
         Object[][] itemsData = {
-                {1, "CNMG Carbide Insert", "ToolTech", "ToolMaster", 10, "Carbide insert for turning operations", "Turning", new String[]{"CNMG"}, true, 40},
-                {2, "DNMG Carbide Insert", "CNC Tools", "CNC Mart", 8, "Carbide insert for turning operations", "Turning", new String[]{"DNMG"}, false, 25},
+                {1, "CNMG Carbide Insert", "ToolTech", "ToolMaster", 10, "Carbide insert for turning operations", "Turning", new String[]{"K","N","H", "S"}, true, 40},
+                {2, "DNMG Carbide Insert", "CNC Tools", "CNC Mart", 8, "Carbide insert for turning operations", "Turning", new String[]{"K","N", "S"}, false, 25},
                 {3, "Solid Carbide End Mill", "EndMaster", "EndMill Supplies", 15, "High-performance end mill for milling operations", "Milling", new String[]{"M"}, true, 50},
                 {4, "HSS Twist Drill Bit", "DrillPro", "DrillBits Inc.", 20, "High-speed steel twist drill bit", "Hole Making", new String[]{"K", "S"}, false, 15},
                 {5, "Indexable Face Mill", "FaceMaster", "ToolZone", 6, "Indexable face mill for milling applications", "Milling", new String[]{"M", "S"}, true, 30},

@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api")
 public class SignInController {
@@ -18,13 +19,12 @@ public class SignInController {
         this.userService = userService;
     }
 
-    @CrossOrigin
     @PostMapping("/signin")
     public ResponseEntity<String> signIn(@RequestParam(required = false) Integer rotavalId, @RequestParam String password) {
         User user = userService.getUserByRotavalId(rotavalId);
 
         if (user == null) {
-            return new ResponseEntity<>("User not found.", HttpStatus.NOT_FOUND);
+            throw new IllegalArgumentException("User not found");
         }
 
         // Compare the provided plain text password with the stored password
@@ -33,7 +33,7 @@ public class SignInController {
             return new ResponseEntity<>(user.getName()+ " " + user.getSurname() , HttpStatus.OK);
         } else {
             // Invalid password
-            return new ResponseEntity<>("Invalid password.", HttpStatus.UNAUTHORIZED);
+            throw new IllegalArgumentException("Invalid Password");
         }
     }
 }

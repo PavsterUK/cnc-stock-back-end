@@ -22,6 +22,9 @@ public class PurchaseRequestService {
     }
 
     public PurchaseRequest createPurchaseRequest(PurchaseRequest purchaseRequest) {
+        if(purchaseRequest.getRequester().isEmpty()) {
+            throw new IllegalArgumentException("Requester cannot be anonymos");
+        }
        return purchaseRequestRepository.save(purchaseRequest);
     }
 
