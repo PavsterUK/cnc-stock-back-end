@@ -27,6 +27,7 @@ public class PurchaseRequest {
 
     @Getter
     @Setter
+    @NonNull
     private String requester;
 
     @Getter
