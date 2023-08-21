@@ -30,33 +30,27 @@ public class StockItemService {
         }
     }
 
-    public StockItem getStockItemByLocation(int location) {
-        Optional<StockItem> stockItemOptional = stockItemRepository.findById(location);
+    public StockItem getStockItemById(Long id) {
+        Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
         return stockItemOptional.orElse(null);
     }
 
     public StockItem createStockItem(StockItem stockItem) {
 
-        checkRequiredFields(stockItem, "title", "location", "supplier", "minQty","category");
+        checkRequiredFields(stockItem, "title", "location", "supplier", "minQty","category","stockQty", "restockQty");
 
-        // Check if a stock item with the same location already exists
-        if (stockItemRepository.existsById(stockItem.getLocation())) {
-            throw new IllegalArgumentException("Item with the same location already exists.");
-        }
         return stockItemRepository.save(stockItem);
     }
 
-    public StockItem updateStockItem(int location, StockItem updatedStockItem) {
-        Optional<StockItem> stockItemOptional = stockItemRepository.findById(location);
+    public StockItem updateStockItem(Long id, StockItem updatedStockItem) {
+        Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
         if (stockItemOptional.isEmpty()) {
-            throw new IllegalArgumentException("Item with the specified location not found.");
+            throw new IllegalArgumentException("Item with the specified id not found.");
         }
 
         StockItem existingStockItem = stockItemOptional.get();
 
-        checkRequiredFields(updatedStockItem, "title", "supplier", "minQty", "category", "location","stockQty");
-
-        checkLocationConflict(location, updatedStockItem);
+        checkRequiredFields(updatedStockItem, "title", "supplier", "minQty", "category", "location","restockQty");
 
         updateProperties(existingStockItem, updatedStockItem);
 
@@ -72,13 +66,12 @@ public class StockItemService {
                 field.setAccessible(true);
                 Object value = field.get(stockItem);
                 if (value == null || (value instanceof String && ((String) value).isEmpty())) {
-                    throw new IllegalArgumentException(fieldName + " is a required field and cannot be null or empty.");
+                    throw new IllegalArgumentException(fieldName + " is a required field and cannot be empty.");
                 }
 
-                // Additional validation for numeric fields (minQty, location, stockQty)
+                // Additional validation for numeric fields (minQty, location, stockQty, restockQty)
                 if (field.getType() == int.class) {
                     int numericValue = (int) value;
-                    System.out.println("Num value="+ fieldName +"="+ numericValue);
                     if (numericValue < 0) {
                         throw new IllegalArgumentException(fieldName + " must be a non-negative value.");
                     }
@@ -86,13 +79,6 @@ public class StockItemService {
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new IllegalArgumentException("Invalid field name: " + fieldName);
             }
-        }
-    }
-
-    private void checkLocationConflict(int location, StockItem updatedStockItem) {
-        int updatedLocation = updatedStockItem.getLocation();
-        if (location != updatedLocation && stockItemRepository.existsById(updatedLocation)) {
-            throw new IllegalArgumentException("Item with the updated location already exists.");
         }
     }
 
@@ -112,12 +98,12 @@ public class StockItemService {
         }
     }
 
-    public void deleteStockItem(int location) {
-        Optional<StockItem> stockItemOptional = stockItemRepository.findById(location);
+    public void deleteStockItem(Long id) {
+        Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
         if (stockItemOptional.isEmpty()) {
-            throw new NoSuchElementException("Item with the specified location not found.");
+            throw new NoSuchElementException("Item with the specified id not found.");
         }
-        stockItemRepository.deleteById(location);
+        stockItemRepository.deleteById(id);
     }
 
 }

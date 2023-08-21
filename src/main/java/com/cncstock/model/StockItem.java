@@ -11,14 +11,17 @@ import javax.persistence.*;
 public class StockItem {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
-    @NonNull
+    private Long id;
+
+    @Getter
+    @Setter
     private int location;
 
     @Getter
     @Setter
-    @NonNull
     private String title;
 
     @Getter
@@ -27,12 +30,10 @@ public class StockItem {
 
     @Getter
     @Setter
-    @NonNull
     private String supplier;
 
     @Getter
     @Setter
-    @NonNull
     private int minQty ;
 
     @Getter
@@ -41,7 +42,6 @@ public class StockItem {
 
     @Getter
     @Setter
-    @NonNull
     private String category;
 
     @Getter
@@ -55,6 +55,10 @@ public class StockItem {
     @Getter
     @Setter
     private int stockQty;
+
+    @Getter
+    @Setter
+    private int restockQty;
 
 
 }
