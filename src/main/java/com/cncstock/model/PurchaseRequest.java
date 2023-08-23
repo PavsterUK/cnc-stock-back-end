@@ -3,6 +3,7 @@ package com.cncstock.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @ToString
@@ -18,7 +19,7 @@ public class PurchaseRequest {
 
     @Getter
     @Setter
-    private String requestDate;
+    private Date requestDate;
 
     @Getter
     @Setter

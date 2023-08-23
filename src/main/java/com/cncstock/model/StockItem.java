@@ -3,6 +3,7 @@ package com.cncstock.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @ToString
@@ -59,6 +60,9 @@ public class StockItem {
     @Getter
     @Setter
     private int restockQty;
+
+    @OneToMany(mappedBy = "stockItem")
+    private List<VendingTransaction> vendingTransactions;
 
 
 }
