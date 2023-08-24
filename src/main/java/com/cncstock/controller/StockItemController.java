@@ -40,9 +40,9 @@ public class StockItemController {
         return new ResponseEntity<>(stockItems, HttpStatus.OK);
     }
 
-    @GetMapping("/stock-item/{location}")
-    public ResponseEntity<StockItem> getStockItemByLocation(@PathVariable("location") int location) {
-        StockItem stockItem = stockItemService.getStockItemByLocation(location);
+    @GetMapping("/stock-item/{id}")
+    public ResponseEntity<StockItem> getStockItemById(@PathVariable("id") Long id) {
+        StockItem stockItem = stockItemService.getStockItemById(id);
         return new ResponseEntity<>(stockItem, HttpStatus.OK);
     }
 
@@ -52,16 +52,16 @@ public class StockItemController {
         return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
     }
 
-    @PutMapping("/stock-item/{location}")
-    public ResponseEntity<?> updateStockItem(@PathVariable("location") int location, @RequestBody StockItem stockItem) {
-        StockItem updatedStockItem = stockItemService.updateStockItem(location, stockItem);
+    @PutMapping("/stock-item/{id}")
+    public ResponseEntity<?> updateStockItem(@PathVariable("id") Long id, @RequestBody StockItem stockItem) {
+        StockItem updatedStockItem = stockItemService.updateStockItem(id, stockItem);
         return new ResponseEntity<>("Item Updated", HttpStatus.OK);
     }
 
 
-    @DeleteMapping("/stock-item/{location}")
-    public ResponseEntity<String> deleteStockItem(@PathVariable("location") int location) {
-        stockItemService.deleteStockItem(location);
+    @DeleteMapping("/stock-item/{id}")
+    public ResponseEntity<String> deleteStockItem(@PathVariable("id") Long id) {
+        stockItemService.deleteStockItem(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
