@@ -1,9 +1,8 @@
 package com.cncstock.service;
 
-import com.cncstock.model.User;
+import com.cncstock.model.entity.User;
 import com.cncstock.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

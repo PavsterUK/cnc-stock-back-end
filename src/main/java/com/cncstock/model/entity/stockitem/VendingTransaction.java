@@ -1,4 +1,4 @@
-package com.cncstock.model;
+package com.cncstock.model.entity.stockitem;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +29,7 @@ public class VendingTransaction {
     @Setter
     private Date vendDate;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name = "stock_item_id", nullable = false)
     @Getter
     @Setter

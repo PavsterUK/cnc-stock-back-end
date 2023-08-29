@@ -1,4 +1,4 @@
-package com.cncstock.model;
+package com.cncstock.model.entity;
 
 import com.sun.istack.NotNull;
 import lombok.Getter;

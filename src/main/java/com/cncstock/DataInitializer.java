@@ -1,33 +1,53 @@
 package com.cncstock;
 
-import com.cncstock.model.StockItem;
-import com.cncstock.model.User;
-import com.cncstock.repository.StockItemRepository;
+import com.cncstock.model.entity.stockitem.StockItem;
+import com.cncstock.model.entity.User;
+import com.cncstock.model.entity.stockitem.StockItemCategory;
+import com.cncstock.model.entity.stockitem.StockItemSubCategory;
+import com.cncstock.repository.stockitem.StockItemCategoryRepository;
+import com.cncstock.repository.stockitem.StockItemRepository;
 import com.cncstock.repository.UserRepository;
+import com.cncstock.repository.stockitem.StockItemSubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
+
 @Component
 public class DataInitializer implements CommandLineRunner {
+
 
     private final StockItemRepository stockItemRepository;
 
     private final UserRepository userRepository;
 
+    private final StockItemCategoryRepository stockItemCategoryRepository;
+
+    private final StockItemSubCategoryRepository stockItemSubCategoryRepository;
+
     @Autowired
-    public DataInitializer(StockItemRepository stockItemRepository, UserRepository userRepository) {
+    public DataInitializer(StockItemRepository stockItemRepository, UserRepository userRepository, StockItemCategoryRepository stockItemCategoryRepository, StockItemSubCategoryRepository stockItemSubCategoryRepository) {
         this.stockItemRepository = stockItemRepository;
         this.userRepository = userRepository;
+        this.stockItemCategoryRepository = stockItemCategoryRepository;
+        this.stockItemSubCategoryRepository = stockItemSubCategoryRepository;
     }
+
+
 
     @Override
     public void run(String... args) {
+        persistCategories();
+        persistSubCategories();
+        persistStockItems();
+    }
 
-        // Data for 20 items in the stock table
+    private void persistStockItems() {
         Object[][] itemsData = {
-                {1, "CNMG Carbide Insert", "ToolTech", "ToolMaster", 10, "Carbide insert for turning operations", "Turning", new String[]{"K","N","H", "S"}, true, 40},
-                {2, "DNMG Carbide Insert", "CNC Tools", "CNC Mart", 8, "Carbide insert for turning operations", "Turning", new String[]{"K","N", "S"}, false, 25},
+                {1, "CNMG Carbide Insert", "ToolTech", "ToolMaster", 10, "Carbide insert for turning operations", "Turning", new String[]{"K", "N", "H", "S"}, true, 40},
+                {2, "DNMG Carbide Insert", "CNC Tools", "CNC Mart", 8, "Carbide insert for turning operations", "Turning", new String[]{"K", "N", "S"}, false, 25},
                 {3, "Solid Carbide End Mill", "EndMaster", "EndMill Supplies", 15, "High-performance end mill for milling operations", "Milling", new String[]{"M"}, true, 50},
                 {4, "HSS Twist Drill Bit", "DrillPro", "DrillBits Inc.", 20, "High-speed steel twist drill bit", "Hole Making", new String[]{"K", "S"}, false, 15},
                 {5, "Indexable Face Mill", "FaceMaster", "ToolZone", 6, "Indexable face mill for milling applications", "Milling", new String[]{"M", "S"}, true, 30},
@@ -78,6 +98,18 @@ public class DataInitializer implements CommandLineRunner {
                 {50, "Indexable Thread Mill", "ThreadMillTech", "ThreadMasters", 10, "Indexable tool for milling internal threads", "Threading (Inserts, Taps, Thread Mills)", new String[]{"S"}, false, 20},
         };
 
+
+        Optional<StockItemCategory> optionalStockItemCategory = stockItemCategoryRepository.findById(1L);
+        if (optionalStockItemCategory.isEmpty()) {
+            throw new RuntimeException("No categories");
+        }
+
+        Optional<StockItemSubCategory> optionalStockItemSubCategory = stockItemSubCategoryRepository.findById(1L);
+        if (optionalStockItemSubCategory.isEmpty()) {
+            throw new RuntimeException("No sub categories");
+        }
+
+
         for (Object[] itemData : itemsData) {
             StockItem stockItem = new StockItem();
             stockItem.setLocation((int) itemData[0]);
@@ -86,10 +118,11 @@ public class DataInitializer implements CommandLineRunner {
             stockItem.setSupplier((String) itemData[3]);
             stockItem.setMinQty((int) itemData[4]);
             stockItem.setDescription((String) itemData[5]);
-            stockItem.setCategory((String) itemData[6]);
             stockItem.setMaterials((String[]) itemData[7]);
             stockItem.setConstantStock((Boolean) itemData[8]);
             stockItem.setStockQty((Integer) itemData[9]);
+            stockItem.setCategory(optionalStockItemCategory.get());
+            stockItem.setSubCategory(optionalStockItemSubCategory.get());
 
             stockItemRepository.save(stockItem);
         }
@@ -112,8 +145,46 @@ public class DataInitializer implements CommandLineRunner {
 
             userRepository.save(newUser);
         }
+    }
+    private void persistCategories() {
+        String[] categories = {
+                "All Categories",
+                "Turning",
+                "Milling",
+                "Threading",
+                "Hole Making",
+                "Description",
+                "Supplier",
+                "Location",
+                "Brand",
+                "ConStock",
+                "Spare Parts For Tools"};
 
-
+        for (String category : categories) {
+            StockItemCategory stockItemCategory = new StockItemCategory();
+            stockItemCategory.setCategoryName(category);
+            stockItemCategoryRepository.save(stockItemCategory);
+        }
 
     }
+    private void persistSubCategories() {
+        String[] subCategories = {
+                "All Sub Categories",
+                "Face Mills",
+                "Disc Mills",
+                "Helical Mills",
+                "Chamfer Mills",
+                "High Feed Mills",
+                "Plunge Mills",
+                "Copy Mills",};
+
+        for (String subCategory : subCategories ) {
+            StockItemCategory stockItemCategory = stockItemCategoryRepository.findByCategoryName("Milling");
+            StockItemSubCategory stockItemSubCategory = new StockItemSubCategory();
+            stockItemSubCategory.setSubCategoryName(subCategory);
+            stockItemSubCategory.setStockItemCategory(stockItemCategory);
+            stockItemSubCategoryRepository.save(stockItemSubCategory);
+        }
+    }
+
 }

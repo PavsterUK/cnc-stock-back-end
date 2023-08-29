@@ -1,7 +1,7 @@
-package com.cncstock.controller;
+package com.cncstock.controller.stockitem;
 
-import com.cncstock.model.VendingTransaction;
-import com.cncstock.repository.VendingTransactionRepository;
+import com.cncstock.model.entity.stockitem.VendingTransaction;
+import com.cncstock.repository.stockitem.VendingTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

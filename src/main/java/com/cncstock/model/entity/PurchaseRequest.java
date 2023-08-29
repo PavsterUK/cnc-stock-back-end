@@ -1,4 +1,4 @@
-package com.cncstock.model;
+package com.cncstock.model.entity;
 
 import lombok.*;
 
@@ -34,8 +34,6 @@ public class PurchaseRequest {
     @Getter
     @Setter
     private boolean itemPurchased;
-
-
 
 }
 

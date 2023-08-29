@@ -1,6 +1,6 @@
-package com.cncstock.repository;
+package com.cncstock.repository.stockitem;
 
-import com.cncstock.model.StockItem;
+import com.cncstock.model.entity.stockitem.StockItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

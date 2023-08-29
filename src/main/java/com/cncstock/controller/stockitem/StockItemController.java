@@ -1,17 +1,14 @@
-package com.cncstock.controller;
+package com.cncstock.controller.stockitem;
 
-import com.cncstock.model.StockItem;
-import com.cncstock.repository.StockItemRepository;
+import com.cncstock.model.dto.StockItemDTO;
+import com.cncstock.model.entity.stockitem.StockItem;
 import com.cncstock.service.StockItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -25,18 +22,12 @@ public class StockItemController {
         this.stockItemService = stockItemService;
     }
 
-    @GetMapping("/stock-items")
-    public ResponseEntity<List<StockItem>> getAllStockItems() {
-        List<StockItem> stockItems = stockItemService.getAllStockItems();
+    @GetMapping("/stock-list")
+    public ResponseEntity<List<StockItemDTO>> getAllStockItems() {
+        List<StockItemDTO> stockItems = stockItemService.getAllStockItems();
         if (stockItems.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(stockItems, HttpStatus.OK);
-    }
-
-    @GetMapping("/stock-list")
-    public ResponseEntity<List<StockItem>> getAllStockItemsByTitle(@RequestParam(required = false) String title) {
-        List<StockItem> stockItems = stockItemService.getAllStockItemsByTitle(title);
         return new ResponseEntity<>(stockItems, HttpStatus.OK);
     }
 

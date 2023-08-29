@@ -1,17 +1,14 @@
 package com.cncstock.listener;
 
 import com.cncstock.event.StockItemUpdateEvent;
-import com.cncstock.model.StockItem;
-import com.cncstock.model.VendingTransaction;
-import com.cncstock.repository.StockItemRepository;
-import com.cncstock.repository.VendingTransactionRepository;
-import org.hibernate.cache.spi.support.AbstractReadWriteAccess;
+import com.cncstock.model.entity.stockitem.StockItem;
+import com.cncstock.model.entity.stockitem.VendingTransaction;
+import com.cncstock.repository.stockitem.StockItemRepository;
+import com.cncstock.repository.stockitem.VendingTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import javax.persistence.PreUpdate;
 import java.util.Date;
 
 @Component
