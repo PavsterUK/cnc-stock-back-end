@@ -1,18 +1,12 @@
-package com.cncstock.model;
+package com.cncstock.model.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.*;
-import java.util.List;
+@AllArgsConstructor
+public class StockItemDTO {
 
-@Entity
-@ToString
-@NoArgsConstructor
-@Table(name = "STOCK")
-public class StockItem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
     private Long id;
@@ -43,7 +37,11 @@ public class StockItem {
 
     @Getter
     @Setter
-    private String category;
+    private String categoryName;
+
+    @Getter
+    @Setter
+    private String subCategoryName;
 
     @Getter
     @Setter
@@ -60,9 +58,4 @@ public class StockItem {
     @Getter
     @Setter
     private int restockQty;
-
-    @OneToMany(mappedBy = "stockItem")
-    private List<VendingTransaction> vendingTransactions;
-
-
 }

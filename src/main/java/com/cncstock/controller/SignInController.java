@@ -1,6 +1,6 @@
 package com.cncstock.controller;
 
-import com.cncstock.model.User;
+import com.cncstock.model.entity.User;
 import com.cncstock.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

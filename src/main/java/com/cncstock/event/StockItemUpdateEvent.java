@@ -1,6 +1,6 @@
 package com.cncstock.event;
 
-import com.cncstock.model.StockItem;
+import com.cncstock.model.entity.stockitem.StockItem;
 import org.springframework.context.ApplicationEvent;
 
 public class StockItemUpdateEvent extends ApplicationEvent {

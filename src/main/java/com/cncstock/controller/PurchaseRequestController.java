@@ -1,7 +1,6 @@
 package com.cncstock.controller;
 
-import com.cncstock.model.PurchaseRequest;
-import com.cncstock.model.StockItem;
+import com.cncstock.model.entity.PurchaseRequest;
 import com.cncstock.service.PurchaseRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

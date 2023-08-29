@@ -1,35 +1,36 @@
 package com.cncstock.service;
 
 import com.cncstock.event.StockItemUpdateEvent;
-import com.cncstock.model.StockItem;
-import com.cncstock.model.VendingTransaction;
-import com.cncstock.repository.StockItemRepository;
-import com.cncstock.repository.VendingTransactionRepository;
+import com.cncstock.model.dto.StockItemCategoryDTO;
+import com.cncstock.model.dto.StockItemDTO;
+import com.cncstock.model.entity.stockitem.StockItem;
+import com.cncstock.model.entity.stockitem.StockItemCategory;
+import com.cncstock.repository.stockitem.StockItemRepository;
+import com.cncstock.repository.stockitem.VendingTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class StockItemService {
 
     private final StockItemRepository stockItemRepository;
-    private final VendingTransactionRepository vendingTransactionRepository;
 
-    private ApplicationEventPublisher eventPublisher;
+
+    private final ApplicationEventPublisher eventPublisher;
     @Autowired
-    public StockItemService(StockItemRepository stockItemRepository, VendingTransactionRepository vendingTransactionRepository, ApplicationEventPublisher eventPublisher) {
+    public StockItemService(StockItemRepository stockItemRepository, ApplicationEventPublisher eventPublisher) {
         this.stockItemRepository = stockItemRepository;
-        this.vendingTransactionRepository = vendingTransactionRepository;
         this.eventPublisher = eventPublisher;
     }
 
 
-    public List<StockItem> getAllStockItems() {
-        return stockItemRepository.findAll();
+    public List<StockItemDTO> getAllStockItems() {
+        return toDTO();
     }
 
     public List<StockItem> getAllStockItemsByTitle(String title) {
@@ -67,6 +68,14 @@ public class StockItemService {
         return stockItemRepository.save(existingStockItem);
     }
 
+    public void deleteStockItem(Long id) {
+        Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
+        if (stockItemOptional.isEmpty()) {
+            throw new NoSuchElementException("Item with the specified id not found.");
+        }
+        stockItemRepository.deleteById(id);
+    }
+
     private void checkRequiredFields(StockItem stockItem, String... requiredFields) {
         List<String> reqItems = List.of(requiredFields);
 
@@ -90,7 +99,6 @@ public class StockItemService {
                     }
 
                 }
-                // Additional validation for numeric fields (minQty, location, stockQty, restockQty)
 
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 throw new IllegalArgumentException("Invalid field name: " + fieldName);
@@ -99,8 +107,7 @@ public class StockItemService {
     }
 
     private void updateProperties(StockItem existingStockItem, StockItem updatedStockItem) {
-        StockItemUpdateEvent event = new StockItemUpdateEvent(this, updatedStockItem, existingStockItem.getStockQty() );
-        eventPublisher.publishEvent(event);
+        int prevQty = existingStockItem.getStockQty();
         Class<? extends StockItem> stockItemClass = existingStockItem.getClass();
         Field[] fields = stockItemClass.getDeclaredFields();
         for (Field field : fields) {
@@ -114,16 +121,29 @@ public class StockItemService {
                 throw new IllegalArgumentException("Item not updated.");
             }
         }
-
+        StockItemUpdateEvent event = new StockItemUpdateEvent(this, updatedStockItem, prevQty );
+        eventPublisher.publishEvent(event);
     }
 
+    private List<StockItemDTO> toDTO() {
+        List<StockItem> stockItemList = stockItemRepository.findAll();
 
-    public void deleteStockItem(Long id) {
-        Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
-        if (stockItemOptional.isEmpty()) {
-            throw new NoSuchElementException("Item with the specified id not found.");
-        }
-        stockItemRepository.deleteById(id);
+        return stockItemList.stream()
+                .map(item -> new StockItemDTO(
+                        item.getId(),
+                        item.getLocation(),
+                        item.getTitle(),
+                        item.getBrand(),
+                        item.getSupplier(),
+                        item.getMinQty(),
+                        item.getDescription(),
+                        item.getCategory().getCategoryName(),
+                        item.getSubCategory().getSubCategoryName(),
+                        item.getMaterials(),
+                        item.isConstantStock(),
+                        item.getStockQty(),
+                        item.getRestockQty()))
+                .toList();
     }
 
 }
