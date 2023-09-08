@@ -37,15 +37,17 @@ public class StockItemController {
         return new ResponseEntity<>(stockItem, HttpStatus.OK);
     }
 
-    @PostMapping("/stock-item")
-    public ResponseEntity<?> createStockItem(@RequestBody StockItem stockItem) {
-        StockItem savedStockItem = stockItemService.createStockItem(stockItem);
-        return new ResponseEntity<>(savedStockItem, HttpStatus.CREATED);
-    }
+//    @PostMapping("/stock-item")
+//    public ResponseEntity<?> createStockItem(@RequestBody StockItemDTO stockItemDTO) {
+//        StockItemDTO savedStockItemDTO = stockItemService.createStockItem(stockItemDTO);
+//        return new ResponseEntity<>(savedStockItemDTO, HttpStatus.CREATED);
+//    }
 
     @PutMapping("/stock-item/{id}")
-    public ResponseEntity<?> updateStockItem(@PathVariable("id") Long id, @RequestBody StockItem stockItem) {
-        StockItem updatedStockItem = stockItemService.updateStockItem(id, stockItem);
+    public ResponseEntity<?> updateStockItem(@PathVariable("id") Long id, @RequestBody StockItemDTO stockItemDTO) {
+
+        StockItem updatedStockItem = stockItemService.toStockItem(stockItemDTO);
+        stockItemService.updateStockItem(id, updatedStockItem);
         return new ResponseEntity<>("Item Updated", HttpStatus.OK);
     }
 
