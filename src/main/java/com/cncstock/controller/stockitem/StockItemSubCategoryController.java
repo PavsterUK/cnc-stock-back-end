@@ -2,6 +2,9 @@ package com.cncstock.controller.stockitem;
 
 import com.cncstock.exception.CategoryNotFoundException;
 import com.cncstock.exception.SubCategoryAlreadyExistsException;
+import com.cncstock.exception.SubCategoryNotFoundException;
+import com.cncstock.model.dto.StockItemCategoryDTO;
+import com.cncstock.model.dto.StockItemSubCategoryDTO;
 import com.cncstock.model.entity.stockitem.StockItemCategory;
 import com.cncstock.model.entity.stockitem.StockItemSubCategory;
 import com.cncstock.repository.stockitem.StockItemCategoryRepository;
@@ -14,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -51,9 +55,25 @@ public class StockItemSubCategoryController {
     }
 
     @GetMapping("/subcategories/{category_id}")
-    public ResponseEntity<List<StockItemSubCategory>> getSubCategories(@PathVariable Long category_id) {
+    public ResponseEntity<List<StockItemSubCategoryDTO>> getSubCategories(@PathVariable Long category_id) {
         List<StockItemSubCategory> subCategoryList = stockItemSubCategoryRepository.findByStockItemCategory_Id(category_id);
-        return new ResponseEntity<>(subCategoryList, HttpStatus.OK);
+
+        List<StockItemSubCategoryDTO> dtoList = subCategoryList.stream()
+                .map(subCategory -> new StockItemSubCategoryDTO(subCategory.getId(), subCategory.getSubCategoryName(), subCategory.getStockItemCategory().getId()))
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(dtoList, HttpStatus.OK);
+    }
+
+    @GetMapping("/subcategory/{subCategoryId}")
+    public ResponseEntity<StockItemSubCategoryDTO> getSubCategory(@PathVariable Long subCategoryId) {
+       Optional<StockItemSubCategory> optionalSubCategory = stockItemSubCategoryRepository.findById(subCategoryId);
+       if(optionalSubCategory.isEmpty()){
+           throw new SubCategoryNotFoundException(subCategoryId);
+       }
+       StockItemSubCategory subCategory = optionalSubCategory.get();
+       StockItemSubCategoryDTO dtoSubCat = new StockItemSubCategoryDTO(subCategory.getId(), subCategory.getSubCategoryName(), subCategory.getStockItemCategory().getId());
+        return new ResponseEntity<>(dtoSubCat, HttpStatus.OK);
     }
 
     @PutMapping("/subcategory/{id}")
