@@ -1,6 +1,8 @@
 package com.cncstock.service;
 
 import com.cncstock.event.StockItemUpdateEvent;
+import com.cncstock.exception.CategoryNotFoundException;
+import com.cncstock.exception.SubCategoryNotFoundException;
 import com.cncstock.model.dto.StockItemDTO;
 import com.cncstock.model.entity.stockitem.StockItem;
 import com.cncstock.model.entity.stockitem.StockItemCategory;
@@ -10,6 +12,7 @@ import com.cncstock.repository.stockitem.StockItemRepository;
 import com.cncstock.repository.stockitem.StockItemSubCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -49,13 +52,6 @@ public class StockItemService {
         Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
         return stockItemOptional.orElse(null);
     }
-
-//    public StockItem createStockItem(StockItemDTO stockItemDTO) {
-//
-//        checkRequiredFields(StockItem, "title", "location", "supplier", "minQty", "category", "stockQty", "restockQty");
-//
-//        return stockItemRepository.save(stockItem);
-//    }
 
     public StockItem updateStockItem(Long id, StockItem updatedStockItem) {
         Optional<StockItem> stockItemOptional = stockItemRepository.findById(id);
@@ -152,9 +148,39 @@ public class StockItemService {
                 .collect(Collectors.toList());
     }
 
+    public StockItemDTO toDTO(StockItem item) {
+
+        return new StockItemDTO(
+                item.getId(),
+                item.getLocation(),
+                item.getTitle(),
+                item.getBrand(),
+                item.getSupplier(),
+                item.getMinQty(),
+                item.getDescription(),
+                item.getCategory().getId(),
+                item.getCategory().getCategoryName(),
+                item.getSubCategory().getId(),
+                item.getSubCategory().getSubCategoryName(), // This should be the sub-category name
+                item.getMaterials(),
+                item.isConstantStock(),
+                item.getStockQty(),
+                item.getRestockQty());
+
+    }
+
+
     public StockItem toStockItem(StockItemDTO stockItemDTO) {
-        Optional<StockItemCategory> stockItemCategory = stockItemCategoryRepository.findById(stockItemDTO.getId());
+        Optional<StockItemCategory> stockItemCategory = stockItemCategoryRepository.findById(stockItemDTO.getCategoryId());
         Optional<StockItemSubCategory> stockItemSubCategory = stockItemSubCategoryRepository.findById(stockItemDTO.getSubCategoryId());
+
+        if (stockItemCategory.isEmpty()) {
+            throw new CategoryNotFoundException(stockItemDTO.getCategoryName());
+        }
+
+        if (stockItemSubCategory.isEmpty()) {
+            throw new SubCategoryNotFoundException(stockItemDTO.getSubCategoryName());
+        }
 
         StockItem stockItem = new StockItem();
         stockItem.setId(stockItemDTO.getId());

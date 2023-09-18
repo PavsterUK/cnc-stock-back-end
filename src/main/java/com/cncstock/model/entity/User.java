@@ -9,24 +9,19 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "USERS")
 public class User {
     @Id
     @NotNull
-    @Getter
-    @Setter
+
     private int rotavalID;
 
-    @Getter
-    @Setter
     private String name;
 
-    @Getter
-    @Setter
     private String surname;
 
-    @Getter
-    @Setter
     private String password;
 
     public User() {}

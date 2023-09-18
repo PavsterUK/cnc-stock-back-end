@@ -29,7 +29,6 @@ public class StockItemUpdateListener implements ApplicationListener<StockItemUpd
         StockItem originalStockItem = stockItemRepository.findById(stockItem.getId()).orElse(null);
         System.out.println(prevStockQty);
         if (originalStockItem != null && stockItem.getStockQty() < prevStockQty) {
-            System.out.println("INSIDE!!!!!!!!");
             int vendQty = prevStockQty - stockItem.getStockQty(); // Quantity taken
             addVendingTransaction(vendQty, stockItem);
         }
