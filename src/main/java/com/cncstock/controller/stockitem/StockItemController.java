@@ -48,7 +48,7 @@ public class StockItemController {
 
         StockItem updatedStockItem = stockItemService.toStockItem(stockItemDTO);
         stockItemService.updateStockItem(id, updatedStockItem);
-        return new ResponseEntity<>("Item Updated", HttpStatus.OK);
+        return new ResponseEntity<>(stockItemService.toDTO(updatedStockItem), HttpStatus.OK);
     }
 
 

@@ -34,23 +34,22 @@ public class StockItemSubCategoryController {
         this.stockItemCategoryRepository = stockItemCategoryRepository;
     }
 
-    @PostMapping("/subcategory")
-    public ResponseEntity<?> createSubCategory(@RequestBody StockItemSubCategory stockItemSubCategory) {
-        StockItemCategory stockItemCategory = stockItemSubCategory.getStockItemCategory();
-        Optional<StockItemCategory> optionalStockItemCategory = stockItemCategoryRepository.findById(stockItemCategory.getId());
+    @PostMapping("/subcategory/add/{category_id}")
+    public ResponseEntity<?> createSubCategory(@PathVariable Long category_id, @RequestParam String subcategoryName) {
+        Optional<StockItemCategory> optionalStockItemCategory = stockItemCategoryRepository.findById(category_id);
 
         if (optionalStockItemCategory.isEmpty()) {
-            throw new CategoryNotFoundException(stockItemCategory.getCategoryName());
+            throw new CategoryNotFoundException("category not found with id " + category_id);
         }
 
         boolean subCategoryExistsForGivenCategory = stockItemSubCategoryRepository.existsBySubCategoryNameAndStockItemCategory(
-                stockItemSubCategory.getSubCategoryName(), stockItemCategory);
+                subcategoryName, optionalStockItemCategory.get());
 
         if (subCategoryExistsForGivenCategory) {
-            throw new SubCategoryAlreadyExistsException(stockItemSubCategory.getSubCategoryName());
+            throw new SubCategoryAlreadyExistsException(subcategoryName);
         }
 
-        StockItemSubCategory savedSubCategory = stockItemSubCategoryRepository.save(stockItemSubCategory);
+        StockItemSubCategory savedSubCategory = stockItemSubCategoryRepository.save(new StockItemSubCategory(optionalStockItemCategory.get(), subcategoryName));
         return ResponseEntity.status(HttpStatus.CREATED).body("Subcategory created with ID: " + savedSubCategory.getId());
     }
 
@@ -67,12 +66,12 @@ public class StockItemSubCategoryController {
 
     @GetMapping("/subcategory/{subCategoryId}")
     public ResponseEntity<StockItemSubCategoryDTO> getSubCategory(@PathVariable Long subCategoryId) {
-       Optional<StockItemSubCategory> optionalSubCategory = stockItemSubCategoryRepository.findById(subCategoryId);
-       if(optionalSubCategory.isEmpty()){
-           throw new SubCategoryNotFoundException(subCategoryId);
-       }
-       StockItemSubCategory subCategory = optionalSubCategory.get();
-       StockItemSubCategoryDTO dtoSubCat = new StockItemSubCategoryDTO(subCategory.getId(), subCategory.getSubCategoryName(), subCategory.getStockItemCategory().getId());
+        Optional<StockItemSubCategory> optionalSubCategory = stockItemSubCategoryRepository.findById(subCategoryId);
+        if (optionalSubCategory.isEmpty()) {
+            throw new SubCategoryNotFoundException(Long.toString(subCategoryId));
+        }
+        StockItemSubCategory subCategory = optionalSubCategory.get();
+        StockItemSubCategoryDTO dtoSubCat = new StockItemSubCategoryDTO(subCategory.getId(), subCategory.getSubCategoryName(), subCategory.getStockItemCategory().getId());
         return new ResponseEntity<>(dtoSubCat, HttpStatus.OK);
     }
 
@@ -80,7 +79,7 @@ public class StockItemSubCategoryController {
     public ResponseEntity<String> updateStockItemSubCategory(@PathVariable Long id, @RequestBody StockItemSubCategory updatedSubCategory) {
         StockItemSubCategory existingItem = stockItemSubCategoryRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Sub category " + updatedSubCategory.getSubCategoryName() +  " not found"));
+                        HttpStatus.NOT_FOUND, "Sub category " + updatedSubCategory.getSubCategoryName() + " not found"));
 
         existingItem.setSubCategoryName(updatedSubCategory.getSubCategoryName());
         existingItem.setStockItemCategory(updatedSubCategory.getStockItemCategory());

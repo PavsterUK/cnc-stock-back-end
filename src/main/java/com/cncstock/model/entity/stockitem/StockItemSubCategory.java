@@ -26,8 +26,8 @@ public class StockItemSubCategory {
     @JoinColumn(name = "category_id", nullable = false)
     private StockItemCategory stockItemCategory;
 
-    public StockItemSubCategory(Long id, String subCategoryName) {
-        this.id = id;
+    public StockItemSubCategory(StockItemCategory stockItemCategory, String subCategoryName) {
+        this.stockItemCategory = stockItemCategory;
         this.subCategoryName = subCategoryName;
     }
 }

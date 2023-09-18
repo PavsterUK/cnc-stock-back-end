@@ -32,8 +32,7 @@ public class StockItemCategory {
     @ToString.Exclude
     private List<StockItem> stockItems = new ArrayList<>();
 
-    public StockItemCategory(Long id, String categoryName) {
-        this.id = id;
+    public StockItemCategory(String categoryName) {
         this.categoryName = categoryName;
     }
 }

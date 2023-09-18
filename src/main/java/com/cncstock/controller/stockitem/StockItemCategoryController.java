@@ -24,11 +24,12 @@ public class StockItemCategoryController {
         this.stockItemCategoryRepository = stockItemCategoryRepository;
     }
 
-    @PostMapping("/category")
-    public ResponseEntity<?> createCategory(@RequestBody StockItemCategory stockItemCategory) {
-        if(stockItemCategoryRepository.existsByCategoryName(stockItemCategory.getCategoryName())) {
-            throw new CategoryAlreadyExistsException(stockItemCategory.getCategoryName());
+    @PostMapping("/category/add")
+    public ResponseEntity<?> createCategory(@RequestParam String categoryName) {
+        if(stockItemCategoryRepository.existsByCategoryName(categoryName)) {
+            throw new CategoryAlreadyExistsException(categoryName);
         }
+        StockItemCategory stockItemCategory = new StockItemCategory(categoryName);
         StockItemCategory savedCategory = stockItemCategoryRepository.save(stockItemCategory);
         return ResponseEntity.status(HttpStatus.CREATED).body("Category created with ID: " + savedCategory.getId());
     }

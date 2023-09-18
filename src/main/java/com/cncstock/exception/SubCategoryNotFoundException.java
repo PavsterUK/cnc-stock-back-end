@@ -1,7 +1,7 @@
 package com.cncstock.exception;
 
 public class SubCategoryNotFoundException extends RuntimeException {
-    public SubCategoryNotFoundException(Long id) {
-        super("Sub Category with specified id "+ id +" doesent exist");
+    public SubCategoryNotFoundException(String subCategory) {
+        super("Category '" + subCategory + "' does NOT exists.");
     }
 }
