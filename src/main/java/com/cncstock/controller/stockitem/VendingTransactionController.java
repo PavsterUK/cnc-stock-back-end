@@ -1,6 +1,7 @@
 package com.cncstock.controller.stockitem;
 
 import com.cncstock.model.entity.stockitem.VendingTransaction;
+import com.cncstock.repository.stockitem.VendingTransactionProjection;
 import com.cncstock.repository.stockitem.VendingTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +10,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/transactions")
 public class VendingTransactionController {
 
 
@@ -24,10 +25,9 @@ public class VendingTransactionController {
         return vendingTransactionRepository.save(vendingTransaction);
     }
 
-    @GetMapping("/by-stock-item/{stockItemId}")
-    public List<VendingTransaction> getVendingTransactionsByStockItemId(@PathVariable Long stockItemId) {
+    @GetMapping("/{stockItemId}")
+    public List<VendingTransactionProjection> getVendingTransactionsByStockItemId(@PathVariable Long stockItemId) {
         return vendingTransactionRepository.findByStockItemId(stockItemId);
     }
-
 
 }

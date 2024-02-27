@@ -1,10 +1,12 @@
 package com.cncstock.event;
 
 import com.cncstock.model.entity.stockitem.StockItem;
+import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
 public class StockItemUpdateEvent extends ApplicationEvent {
     private final StockItem updatedStockItem;
+    @Getter
     private final int prevStockQty;
 
     public StockItemUpdateEvent(Object source, StockItem updatedStockItem, int prevStockQty) {
@@ -15,9 +17,5 @@ public class StockItemUpdateEvent extends ApplicationEvent {
 
     public StockItem getUpdatedItem() {
         return updatedStockItem;
-    }
-
-    public int getPrevStockQty() {
-        return prevStockQty;
     }
 }

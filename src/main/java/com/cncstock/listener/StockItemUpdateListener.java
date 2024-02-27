@@ -5,7 +5,6 @@ import com.cncstock.model.entity.stockitem.StockItem;
 import com.cncstock.model.entity.stockitem.VendingTransaction;
 import com.cncstock.repository.stockitem.StockItemRepository;
 import com.cncstock.repository.stockitem.VendingTransactionRepository;
-import com.cncstock.service.StockCheckingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
@@ -17,13 +16,12 @@ public class StockItemUpdateListener implements ApplicationListener<StockItemUpd
 
     private final VendingTransactionRepository vendingTransactionRepository;
     private final StockItemRepository stockItemRepository;
-    private final StockCheckingService stockCheckingService;
+
 
     @Autowired
-    public StockItemUpdateListener(VendingTransactionRepository vendingTransactionRepository, StockItemRepository stockItemRepository, StockCheckingService stockCheckingService) {
+    public StockItemUpdateListener(VendingTransactionRepository vendingTransactionRepository, StockItemRepository stockItemRepository) {
         this.vendingTransactionRepository = vendingTransactionRepository;
         this.stockItemRepository = stockItemRepository;
-        this.stockCheckingService = stockCheckingService;
     }
 
     @Override
@@ -34,7 +32,6 @@ public class StockItemUpdateListener implements ApplicationListener<StockItemUpd
         if (originalStockItem != null) {
             int vendQty = stockItem.getStockQty() - prevStockQty; // Quantity taken
             addVendingTransaction(vendQty, stockItem);
-            stockCheckingService.checkItemStock();
         }
 
     }

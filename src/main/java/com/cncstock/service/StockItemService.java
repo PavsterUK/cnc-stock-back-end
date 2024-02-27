@@ -232,6 +232,10 @@ public class StockItemService {
         return stockItem;
     }
 
+    public List<StockItem> getLowStockItems() {
+        return stockItemRepository.findItemsWithLowStock();
+    }
+
 
 
 

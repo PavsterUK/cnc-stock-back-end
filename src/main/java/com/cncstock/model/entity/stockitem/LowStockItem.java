@@ -22,9 +22,7 @@ public class LowStockItem {
 
     private Date dateAdded;
 
-    private Date dateArchived;
+    private boolean isOrdered;
 
-    private boolean purchased;
-
-    private boolean archived;
+    private Date orderDate;
 }

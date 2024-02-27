@@ -4,7 +4,6 @@ import com.cncstock.model.dto.StockItemDTO;
 import com.cncstock.model.dto.SupplierStockItemsDto;
 import com.cncstock.model.entity.stockitem.LowStockItem;
 import com.cncstock.model.entity.stockitem.StockItem;
-import com.cncstock.repository.PurchaseRequestRepository;
 import com.cncstock.repository.stockitem.LowStockItemRepository;
 import com.cncstock.repository.stockitem.StockItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,17 +17,15 @@ public class StockNotificationService {
 
     private final LowStockItemRepository lowStockItemRepository;
     private final StockItemRepository stockItemRepository;
-    private final StockCheckingService stockCheckingService;
     private final StockItemService stockItemService;
     private final EmailService emailService;
     private final String[] EMAIL_LIST = {"andy.stevens@gerickegroup.com", "pavelnaumovic@gmail.com"};
     private final String[] CRHOLLANDS_EMAIL_LIST = {"graham.brown@crhollands.co.uk","pavelnaumovic@gmail.com"};
 
     @Autowired
-    public StockNotificationService(LowStockItemRepository lowStockItemRepository, StockItemRepository stockItemRepository, StockCheckingService stockCheckingService, StockItemService stockItemService, EmailService emailService) {
+    public StockNotificationService(LowStockItemRepository lowStockItemRepository, StockItemRepository stockItemRepository, StockItemService stockItemService, EmailService emailService) {
         this.lowStockItemRepository = lowStockItemRepository;
         this.stockItemRepository = stockItemRepository;
-        this.stockCheckingService = stockCheckingService;
         this.stockItemService = stockItemService;
         this.emailService = emailService;
     }
@@ -60,12 +57,12 @@ public class StockNotificationService {
 
     @Scheduled(cron = "0 0 15 ? * MON-FRI")
     public void stockTakeAndEmail() {
-        stockCheckingService.checkItemStock();
-        String requiredItems = printStockItemsBySupplier();
-        String emailSubject = "Low Stock Items";
-        for (String email : EMAIL_LIST) {
-            emailService.sendEmailWithSignature(email, emailSubject, requiredItems);
-        }
+//        stockCheckingService.checkItemStock();
+//        String requiredItems = printStockItemsBySupplier();
+//        String emailSubject = "Low Stock Items";
+//        for (String email : EMAIL_LIST) {
+//            emailService.sendEmailWithSignature(email, emailSubject, requiredItems);
+//        }
     }
 
     @Scheduled(cron = "0 0 9 ? * MON")
@@ -184,7 +181,6 @@ public class StockNotificationService {
             }
         }
 
-        // End of the HTML table
         builder.append("</table>");
         builder.append("<hr/>");
 
