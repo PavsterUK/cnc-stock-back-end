@@ -6,7 +6,7 @@ import com.cncstock.repository.stockitem.LowStockItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,13 +26,9 @@ public class LowStockService {
         this.stockItemService = stockItemService;
     }
 
-    public List<LowStockItem> getAll() {
-       return lowStockItemRepository.findAll();
-    }
-
-    public void updateLowStockDatabase() {
+    public List<LowStockItem> updateWithMostRecentItems() {
         List<StockItem> incomingLowStockItemsList = stockItemService.getLowStockItems();
-        List<LowStockItem> existingLowStockItemsList = getAll();
+        List<LowStockItem> existingLowStockItemsList =  lowStockItemRepository.findAll();
 
         // Convert to Sets for efficient lookup and removal
         Set<StockItem> incomingLowStockItems = new HashSet<>(incomingLowStockItemsList);
@@ -56,15 +52,16 @@ public class LowStockService {
         Date todaysDate = new Date(System.currentTimeMillis());
         List<LowStockItem> newLowStockItems = incomingLowStockItemsList.stream()
                 .filter(incomingLowStockItems::contains) // Filter only new low stock items
-                .map(stockItem -> new LowStockItem(null, stockItem, todaysDate, false, null)) // Assuming constructor usage
+                .map(stockItem -> new LowStockItem(stockItem, todaysDate, false, null)) // Assuming constructor usage
                 .toList();
 
-        // Save new low stock items to the database
+
+        if (!newLowStockItems.isEmpty()) lowStockItemRepository.deleteAllInBatch();
+
         lowStockItemRepository.saveAll(newLowStockItems);
+
+        return lowStockItemRepository.findAll();
     }
-
-
-
 
 
 }

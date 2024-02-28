@@ -1,5 +1,6 @@
 package com.cncstock.model.entity.stockitem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -50,6 +51,7 @@ public class StockItem {
 
     @OneToMany(mappedBy = "stockItem", cascade = CascadeType.REMOVE)
     @ToString.Exclude
+    @JsonIgnore
     private List<VendingTransaction> vendingTransactions;
 
 }

@@ -1,5 +1,6 @@
 package com.cncstock.model.entity.stockitem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,10 +27,12 @@ public class StockItemCategory {
 
     @OneToMany(mappedBy = "stockItemCategory", cascade = CascadeType.REMOVE)
     @ToString.Exclude
+    @JsonIgnore
     private List<StockItemSubCategory> stockItemSubCategories  = new ArrayList<>();
 
     @OneToMany(mappedBy = "category")
     @ToString.Exclude
+    @JsonIgnore
     private List<StockItem> stockItems = new ArrayList<>();
 
     public StockItemCategory(String categoryName) {

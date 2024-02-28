@@ -25,4 +25,11 @@ public class LowStockItem {
     private boolean isOrdered;
 
     private Date orderDate;
+
+    public LowStockItem(StockItem stockItem, Date dateAdded, boolean isOrdered, Date orderDate) {
+        this.stockItem = stockItem;
+        this.dateAdded = dateAdded;
+        this.isOrdered = isOrdered;
+        this.orderDate = orderDate;
+    }
 }

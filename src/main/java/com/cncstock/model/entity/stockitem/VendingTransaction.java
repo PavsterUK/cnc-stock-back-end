@@ -1,5 +1,6 @@
 package com.cncstock.model.entity.stockitem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,5 +28,6 @@ public class VendingTransaction {
 
     @ManyToOne()
     @JoinColumn(name = "stock_item_id", nullable = false)
+    @JsonIgnore
     private StockItem stockItem;
 }

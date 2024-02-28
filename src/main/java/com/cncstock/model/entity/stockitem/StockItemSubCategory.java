@@ -1,5 +1,6 @@
 package com.cncstock.model.entity.stockitem;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +25,7 @@ public class StockItemSubCategory {
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnore
     private StockItemCategory stockItemCategory;
 
     public StockItemSubCategory(StockItemCategory stockItemCategory, String subCategoryName) {
