@@ -5,10 +5,7 @@ import com.cncstock.service.LowStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,10 +21,16 @@ public class LowStockItemController {
         this.lowStockService = lowStockService;
     }
 
-    @GetMapping("/lowstockitems")
-    public ResponseEntity<List<LowStockItem>> getCategories() {
+    @GetMapping("/low-stock-items")
+    public ResponseEntity<List<LowStockItem>> getLowStockItems() {
         List<LowStockItem> lowStockItems = lowStockService.updateWithMostRecentItems();
         return new ResponseEntity<>(lowStockItems, HttpStatus.OK);
+    }
+
+    @PutMapping ("/low-stock-item/{id}")
+    public ResponseEntity<LowStockItem> updateLowStockItem(@PathVariable("id") Long id) {
+        LowStockItem updatedItem = lowStockService.toggleOrderDate(id);
+        return new ResponseEntity<>(updatedItem, HttpStatus.OK);
     }
 
 }
